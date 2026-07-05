@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tasks</title>
+  <link rel="stylesheet" href="panel.css" />
+</head>
+<body>
+  <header>
+    <div class="header-row">
+      <span class="title">flower companion</span>
+      <span class="progress-label" id="progress-label">0 / 0</span>
+    </div>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="progress-bar"></div>
+    </div>
+  </header>
+
+  <main>
+    <ul id="task-list"></ul>
+    <div id="empty-state">No tasks yet. Add one below!</div>
+  </main>
+
+  <footer>
+    <form id="add-form">
+      <input
+        id="task-input"
+        type="text"
+        placeholder="Add a task..."
+        maxlength="80"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button type="submit">+</button>
+    </form>
+  </footer>
+
+  <script src="panel.js"></script>
+</body>
+</html>

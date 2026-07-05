@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+  <script src="../src/flower/flower-art.js"></script>
+  <script>
+    const GRID = window.FlowerArt.GRID;
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    function drawGrid(ctx, grid, ox, oy, cell) {
+      for (let i = 0; i < grid.length; i++) {
+        const c = grid[i];
+        if (!c) continue;
+        const x = ox + (i % GRID) * cell;
+        const y = oy + Math.floor(i / GRID) * cell;
+        ctx.fillStyle = c;
+        ctx.fillRect(Math.floor(x), Math.floor(y), Math.ceil(cell), Math.ceil(cell));
+      }
+    }
+
+    // ── App icon: white rounded box + red flower + green check badge ──
+    function makeIcon(size) {
+      const cv = document.createElement('canvas');
+      cv.width = size; cv.height = size;
+      const ctx = cv.getContext('2d');
+
+      // soft drop shadow under the box
+      const m = size * 0.085;
+      ctx.save();
+      ctx.shadowColor = 'rgba(120, 80, 70, 0.25)';
+      ctx.shadowBlur = size * 0.05;
+      ctx.shadowOffsetY = size * 0.02;
+      roundRect(ctx, m, m, size - 2 * m, size - 2 * m, size * 0.2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      ctx.restore();
+
+      // subtle border
+      roundRect(ctx, m, m, size - 2 * m, size - 2 * m, size * 0.2);
+      ctx.lineWidth = size * 0.01;
+      ctx.strokeStyle = '#ece2d8';
+      ctx.stroke();
+
+      // flower, sitting upper-left inside the box
+      const grid = window.FlowerArt.buildFlowerGrid('healthy');
+      const fSize = size * 0.60;
+      const cell = fSize / GRID;
+      drawGrid(ctx, grid, size * 0.15, size * 0.11, cell);
+
+      // green check badge, lower-right
+      const bx = size * 0.69, by = size * 0.69, br = size * 0.17;
+      ctx.save();
+      ctx.shadowColor = 'rgba(20, 90, 40, 0.35)';
+      ctx.shadowBlur = size * 0.03;
+      ctx.shadowOffsetY = size * 0.01;
+      ctx.beginPath();
+      ctx.arc(bx, by, br, 0, Math.PI * 2);
+      ctx.fillStyle = '#34b24d';
+      ctx.fill();
+      ctx.restore();
+
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = size * 0.035;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(bx - br * 0.46, by + br * 0.02);
+      ctx.lineTo(bx - br * 0.08, by + br * 0.40);
+      ctx.lineTo(bx + br * 0.52, by - br * 0.42);
+      ctx.stroke();
+
+      return cv.toDataURL('image/png');
+    }
+
+    // ── States strip for the README ──
+    function makeStates() {
+      const items = [
+        ['healthy', '100%'],
+        ['droopy-slight', '80–99%'],
+        ['droopy-petals', '50–79%'],
+        ['droopy-heavy', 'below 50%'],
+        ['dead', '3+ days'],
+      ];
+      const scale = 5;
+      const fpx = GRID * scale;        // 160
+      const padX = 22;
+      const padTop = 20;
+      const labelH = 40;
+      const cardW = fpx + padX;
+      const width = items.length * cardW + padX;
+      const height = padTop + fpx + labelH + 16;
+
+      const cv = document.createElement('canvas');
+      cv.width = width; cv.height = height;
+      const ctx = cv.getContext('2d');
+
+      // background panel
+      roundRect(ctx, 0, 0, width, height, 18);
+      ctx.fillStyle = '#fdf6f0';
+      ctx.fill();
+
+      items.forEach(([state, label], i) => {
+        const ox = padX + i * cardW;
+        const grid = window.FlowerArt.buildFlowerGrid(state);
+        drawGrid(ctx, grid, ox, padTop, scale);
+
+        ctx.fillStyle = '#7a3b3b';
+        ctx.font = '600 24px "Segoe UI", system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(label, ox + fpx / 2, padTop + fpx + 28);
+      });
+
+      return cv.toDataURL('image/png');
+    }
+  </script>
+</body>
+</html>
