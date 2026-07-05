@@ -7,6 +7,13 @@ const taskInput   = document.getElementById('task-input');
 
 let tasks = [];
 
+// A snooze resets a task's neglect clock, keeping it from counting toward
+// wilting for about a day (matches the first wilt threshold in main.js). Show
+// the "Snoozed" tag for that window.
+const DAY_MS = 24 * 60 * 60 * 1000;
+const isSnoozed = (task) =>
+  !task.done && task.snoozedAt && (Date.now() - task.snoozedAt) < DAY_MS;
+
 function render(newTasks) {
   tasks = newTasks;
   taskList.innerHTML = '';
@@ -62,7 +69,22 @@ function render(newTasks) {
     del.addEventListener('click', () => remove(task.id));
     actions.appendChild(del);
 
-    li.append(check, label, actions);
+    li.append(check, label);
+
+    // Little indicator that this task is currently snoozed (not wilting the flower).
+    if (isSnoozed(task)) {
+      const badge = document.createElement('span');
+      badge.className = 'task-snoozed';
+      badge.title = "Snoozed — not counting toward wilting right now";
+      badge.innerHTML =
+        '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" ' +
+        'stroke="currentColor" stroke-width="2" stroke-linecap="round" ' +
+        'stroke-linejoin="round"><circle cx="12" cy="13" r="8"/>' +
+        '<path d="M12 9v4l2.5 1.5M5 3 2 6M22 6l-3-3"/></svg>Snoozed';
+      li.append(badge);
+    }
+
+    li.append(actions);
     taskList.appendChild(li);
   });
 }
