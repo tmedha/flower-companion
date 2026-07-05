@@ -45,6 +45,12 @@ function taskCreatedAt(task) {
   return task.createdAt ?? task.id;
 }
 
+// When a task's neglect clock starts. Snoozing ("I'm working on this") pushes it
+// forward to now, so a long-running task stops driving the wilt until it re-ages.
+function taskNeglectStart(task) {
+  return Math.max(taskCreatedAt(task), task.snoozedAt || 0);
+}
+
 function getFlowerState(store) {
   const tasks = store.get('tasks');
   if (!tasks || tasks.length === 0) return 'healthy';
@@ -58,7 +64,7 @@ function getFlowerState(store) {
   // `lastCompletedAt` to now, so the flower perks up.
   const now = Date.now();
   const lastCompletedAt = store.get('lastCompletedAt') || 0;
-  const oldestPendingAt = Math.min(...pending.map(taskCreatedAt));
+  const oldestPendingAt = Math.min(...pending.map(taskNeglectStart));
   const reference = Math.max(lastCompletedAt, oldestPendingAt);
   const neglectDays = (now - reference) / DAY_MS;
 
@@ -250,6 +256,16 @@ function registerIPC() {
         store.set('lastCompletedAt', task.completedAt);
       }
     }
+    store.set('tasks', tasks);
+    afterTaskChange();
+    return tasks;
+  });
+
+  ipcMain.handle('snooze-task', (_, id) => {
+    const tasks = store.get('tasks');
+    const task = tasks.find(t => t.id === id);
+    // Reset this task's neglect clock — signals "I'm still on it" without completing it.
+    if (task && !task.done) task.snoozedAt = Date.now();
     store.set('tasks', tasks);
     afterTaskChange();
     return tasks;

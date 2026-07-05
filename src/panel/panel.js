@@ -34,16 +34,35 @@ function render(newTasks) {
     label.className = 'task-label' + (task.done ? ' done' : '');
     label.textContent = task.title;
 
+    const actions = document.createElement('div');
+    actions.className = 'task-actions';
+
+    // Snooze ("I'm working on this") — only meaningful for unfinished tasks.
+    // Resets the task's neglect clock so a long task doesn't wilt the flower.
+    if (!task.done) {
+      const snooze = document.createElement('button');
+      snooze.className = 'task-btn task-snooze';
+      snooze.title = "Snooze — I'm working on this";
+      snooze.innerHTML =
+        '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" ' +
+        'stroke="currentColor" stroke-width="2" stroke-linecap="round" ' +
+        'stroke-linejoin="round"><circle cx="12" cy="13" r="8"/>' +
+        '<path d="M12 9v4l2.5 1.5M5 3 2 6M22 6l-3-3"/></svg>';
+      snooze.addEventListener('click', () => snoozeTask(task.id));
+      actions.appendChild(snooze);
+    }
+
     const del = document.createElement('button');
-    del.className = 'task-delete';
+    del.className = 'task-btn task-delete';
     del.title = 'Delete task';
     del.textContent = '×';
 
     check.addEventListener('click', () => toggle(task.id));
     label.addEventListener('click', () => toggle(task.id));
     del.addEventListener('click', () => remove(task.id));
+    actions.appendChild(del);
 
-    li.append(check, label, del);
+    li.append(check, label, actions);
     taskList.appendChild(li);
   });
 }
@@ -55,6 +74,11 @@ async function toggle(id) {
 
 async function remove(id) {
   const updated = await window.api.deleteTask(id);
+  render(updated);
+}
+
+async function snoozeTask(id) {
+  const updated = await window.api.snoozeTask(id);
   render(updated);
 }
 

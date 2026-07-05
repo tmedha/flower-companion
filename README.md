@@ -69,30 +69,6 @@ That's it — the flower will appear in the bottom-right corner of your screen.
 
 ---
 
-## Building installers yourself
-
-To produce a distributable installer for your current platform:
-
-```bash
-npm run build          # build for the platform you're currently on
-```
-
-Or target a specific platform:
-
-```bash
-npm run build:mac      # macOS .dmg
-npm run build:win      # Windows .exe (NSIS installer)
-npm run build:linux    # Linux .AppImage
-```
-
-Finished installers land in the `dist/` folder.
-
-> **Note:** You can only build a macOS `.dmg` on a Mac. To build for all three
-> platforms at once, push a `v*` git tag (e.g. `git tag v1.0.0 && git push --tags`)
-> — the included GitHub Actions workflow builds Mac, Windows, and Linux automatically.
-
----
-
 ## How to use
 
 | Action | What it does |
@@ -102,12 +78,14 @@ Finished installers land in the `dist/` folder.
 | **Double-click** the flower | Open / focus the task list |
 | Type a task and press **Enter** (or **+**) | Add a task |
 | Click a task or its checkbox | Toggle it complete / incomplete |
+| Click the **⏰ snooze** on a task | Reset that task's clock — "I'm working on this," so a long task won't wilt the flower |
 | Click **×** on a task | Delete it |
 
 Tasks stay until you delete them, so the same checklist carries over day to day.
 The flower tracks how long your unfinished tasks have been sitting: leave them
 untended for days and it gradually wilts, but cross any task off and it perks
-right back up.
+right back up. Working on something that takes a while? Hit **snooze** on it to
+reset its clock so it won't wilt the flower while you're still on it.
 
 ---
 

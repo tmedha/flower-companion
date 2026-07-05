@@ -13,6 +13,7 @@ contextBridge.exposeInMainWorld('api', {
   getTasks: () => ipcRenderer.invoke('get-tasks'),
   addTask: (title) => ipcRenderer.invoke('add-task', title),
   toggleTask: (id) => ipcRenderer.invoke('toggle-task', id),
+  snoozeTask: (id) => ipcRenderer.invoke('snooze-task', id),
   deleteTask: (id) => ipcRenderer.invoke('delete-task', id),
   reorderTasks: (tasks) => ipcRenderer.invoke('reorder-tasks', tasks),
   onTasksUpdate: (cb) => ipcRenderer.on('tasks-update', (_, tasks) => cb(tasks)),

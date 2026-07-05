@@ -50,33 +50,26 @@
       ctx.strokeStyle = '#ece2d8';
       ctx.stroke();
 
-      // flower, sitting upper-left inside the box
+      // black horizontal lines behind the flower (clipped to the rounded box)
+      ctx.save();
+      roundRect(ctx, m, m, size - 2 * m, size - 2 * m, size * 0.2);
+      ctx.clip();
+      ctx.strokeStyle = '#111111';
+      ctx.lineWidth = size * 0.016;
+      const step = size * 0.11;
+      for (let y = m + step; y < size - m; y += step) {
+        ctx.beginPath();
+        ctx.moveTo(m, y);
+        ctx.lineTo(size - m, y);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // flower, centered inside the box, drawn on top of the lines
       const grid = window.FlowerArt.buildFlowerGrid('healthy');
       const fSize = size * 0.60;
       const cell = fSize / GRID;
-      drawGrid(ctx, grid, size * 0.15, size * 0.11, cell);
-
-      // green check badge, lower-right
-      const bx = size * 0.69, by = size * 0.69, br = size * 0.17;
-      ctx.save();
-      ctx.shadowColor = 'rgba(20, 90, 40, 0.35)';
-      ctx.shadowBlur = size * 0.03;
-      ctx.shadowOffsetY = size * 0.01;
-      ctx.beginPath();
-      ctx.arc(bx, by, br, 0, Math.PI * 2);
-      ctx.fillStyle = '#34b24d';
-      ctx.fill();
-      ctx.restore();
-
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = size * 0.035;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.beginPath();
-      ctx.moveTo(bx - br * 0.46, by + br * 0.02);
-      ctx.lineTo(bx - br * 0.08, by + br * 0.40);
-      ctx.lineTo(bx + br * 0.52, by - br * 0.42);
-      ctx.stroke();
+      drawGrid(ctx, grid, (size - fSize) / 2, (size - fSize) / 2, cell);
 
       return cv.toDataURL('image/png');
     }
@@ -84,11 +77,11 @@
     // ── States strip for the README ──
     function makeStates() {
       const items = [
-        ['healthy', '100%'],
-        ['droopy-slight', '80–99%'],
-        ['droopy-petals', '50–79%'],
-        ['droopy-heavy', 'below 50%'],
-        ['dead', '3+ days'],
+        ['healthy', 'Healthy'],
+        ['droopy-slight', 'Drooping'],
+        ['droopy-petals', 'Wilting'],
+        ['droopy-heavy', 'Fading'],
+        ['dead', 'Withered'],
       ];
       const scale = 5;
       const fpx = GRID * scale;        // 160
