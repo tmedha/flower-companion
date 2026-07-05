@@ -35,20 +35,6 @@ sheds petals, and eventually wilts to brown.
 
 ## Installation
 
-### Option A — Download a prebuilt release (easiest)
-
-1. Go to the [**Releases**](../../releases) page.
-2. Download the file for your operating system:
-   - **macOS** → `Flower Companion-x.y.z.dmg`
-   - **Windows** → `Flower Companion Setup x.y.z.exe`
-   - **Linux** → `Flower Companion-x.y.z.AppImage`
-3. Open the downloaded file and follow your OS's normal install flow.
-   - On macOS, drag the app into your **Applications** folder. The first time you
-     open it, right-click the app → **Open** to get past the unsigned-app warning.
-   - On Linux, make the AppImage executable (`chmod +x *.AppImage`) and double-click it.
-
-### Option B — Run from source
-
 You'll need [**Node.js**](https://nodejs.org/) (version 18 or newer) installed.
 
 ```bash
