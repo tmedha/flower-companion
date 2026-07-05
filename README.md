@@ -51,7 +51,7 @@ npm install
 npm start
 ```
 
-That's it — the flower will appear in the bottom-right corner of your screen.
+That's it! The flower will appear in the bottom-right corner of your screen.
 
 ---
 
